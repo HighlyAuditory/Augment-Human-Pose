@@ -21,7 +21,6 @@ for epoch in range(10):
     epoch_iter = 0
 
     for i, data in enumerate(dataset):
-        pdb.set_trace()
         iter_start_time = time.time()
         visualizer.reset()
         total_steps += opt.batchSize
@@ -34,7 +33,6 @@ for epoch in range(10):
             save_result = total_steps % opt.update_html_freq == 0
             visualizer.display_current_results(aug_model.get_current_visuals(), epoch, save_result)
             # for param in aug_model.skeleton_net.parameters():
-            pdb.set_trace()
             print(aug_model.skeleton_net.alpha)
         if total_steps % opt.print_freq == 0:
             errors = aug_model.get_current_errors()

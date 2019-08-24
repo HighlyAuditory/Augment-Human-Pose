@@ -45,6 +45,7 @@ class AugmentModel(BaseModel):
         opt.model = 'PATN'
         self.opt = opt
         self.main_model = create_model(opt)
+        # need load_default
         self.skeleton_net = InterSkeleton_Model(opt).cuda()
 
         print('---------- Networks initialized -------------')

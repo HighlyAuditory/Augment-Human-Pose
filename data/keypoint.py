@@ -26,7 +26,6 @@ class KeyDataset(BaseDataset):
     def init_categories(self, pairLst):
         pairs_file_train = pd.read_csv(pairLst)
         self.size = len(pairs_file_train)
-        pdb.set_trace()
         self.pairs = []
         print('Loading data pairs ...')
         for i in range(self.size):
