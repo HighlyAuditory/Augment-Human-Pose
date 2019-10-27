@@ -19,10 +19,10 @@ import pdb
 
 def cords_to_map_yx(cords, img_size, sigma=6):
     MISSING_VALUE = -1
-    result = torch.zeros([cords.size(0), 18, 256, 176],dtype=torch.uint8)
+    result = torch.zeros([cords.size(0), 18, 256, 176])
     for i, points in enumerate(cords):
         for j in range(14):
-            point = points[j].ceil()
+            point = points[j]
             if point[0] == MISSING_VALUE or point[1] == MISSING_VALUE:
                 continue
             xx, yy = torch.meshgrid(torch.arange(img_size[0], dtype=torch.int32).cuda(), torch.arange(img_size[1],dtype=torch.int32).cuda())
@@ -81,7 +81,7 @@ class AugmentModel(BaseModel):
         # 14, no mid 
         # aug_input = torch.cat([a1, a2], 1).cuda().float()  # (b, 14, 3)
         aug_angles = self.skeleton_net(a1, a2)
-        
+        # aug_angles = 0.2*a1+0.8*a2        
         aug_pose = anglelimbtoxyz2(offset, aug_angles, limbs)
         # aug_pose = anglelimbtoxyz2(offset, a1, limbs)
 

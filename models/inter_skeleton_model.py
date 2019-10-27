@@ -28,10 +28,11 @@ class InterSkeleton_Model(BaseModel):
                 print(alpha_path)
 
     def forward(self, input1, input2):
-        self.alpha_clipped = torch.clamp(self.alpha, 0, 1)
+        # self.alpha_clipped = torch.clamp(self.alpha, 0, 1)
+        self.alpha_clipped = self.alpha
         out = self.alpha_clipped * input1 + (1 - self.alpha_clipped) * input2
         return out
 
     def save(self, label):
-        save_path = 'alphas_epoch{}.npy'.format(label)
-        np.save(save_path, self.alphas)
+        save_path = os.path.join(self.save_dir, 'alphas_epoch{}.npy'.format(label))
+        np.save(save_path, self.alpha.cpu().data)

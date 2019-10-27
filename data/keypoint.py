@@ -105,7 +105,7 @@ class KeyDataset(BaseDataset):
 
     def __len__(self):
         if self.opt.phase == 'train':
-            return 4008
+            return 1008
         elif self.opt.phase == 'test':
             return self.size
 
