@@ -3,7 +3,6 @@ from options.augment_options import AugmentOptions
 from data.data_loader import CreateDataLoader
 from models.models import create_model
 from util.visualizer import Visualizer
-import pdb
 
 opt = AugmentOptions().parse()
 data_loader = CreateDataLoader(opt)
@@ -15,8 +14,7 @@ aug_model = create_model(opt)
 visualizer = Visualizer(opt)
 total_steps = 0
 
-# for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
-for epoch in range(10):
+for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
     epoch_start_time = time.time()
     epoch_iter = 0
 
@@ -32,8 +30,7 @@ for epoch in range(10):
         if total_steps % opt.display_freq == 0:
             save_result = total_steps % opt.update_html_freq == 0
             visualizer.display_current_results(aug_model.get_current_visuals(), epoch, save_result)
-            # for param in aug_model.skeleton_net.parameters():
-            # print(aug_model.skeleton_net.alpha)
+
         if total_steps % opt.print_freq == 0:
             errors = aug_model.get_current_errors()
             t = (time.time() - iter_start_time) / opt.batchSize

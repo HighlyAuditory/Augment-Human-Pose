@@ -169,7 +169,6 @@ class TransferModel(BaseModel):
     # D: take(P, P') as input
     def backward_D_PP(self):
         real_PP = torch.cat((self.input_P2, self.input_P1), 1)
-        # fake_PP = self.fake_PP_pool.query(torch.cat((self.fake_p2, self.input_P1), 1))
         fake_PP = self.fake_PP_pool.query( torch.cat((self.fake_p2, self.input_P1), 1).data )
         loss_D_PP = self.backward_D_basic(self.netD_PP, real_PP, fake_PP)
         self.loss_D_PP = loss_D_PP.item()

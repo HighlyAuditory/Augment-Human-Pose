@@ -15,7 +15,6 @@ from .good_order_cood_angle_convert import anglelimbtoxyz2, check_visibility
 import torch.nn.functional as F
 from .inter_skeleton_model import InterSkeleton_Model
 import matplotlib.pyplot as plt
-import pdb
 
 def cords_to_map_yx(cords, img_size, sigma=6):
     MISSING_VALUE = -1
@@ -29,7 +28,6 @@ def cords_to_map_yx(cords, img_size, sigma=6):
             xx = xx.float()
             yy = yy.float()
             res = torch.exp(-((yy - point[0]) ** 2 + (xx - point[1]) ** 2) / (2 * sigma ** 2))
-            # pdb.set_trace()
             result[i, j] = res
 
     return result
@@ -63,7 +61,6 @@ class AugmentModel(BaseModel):
 
                 # initialize optimizers
                 self.optimizer_SK = torch.optim.Adam([self.skeleton_net.alpha], lr=self.skeleton_lr , betas=(opt.beta2, 0.999))
-                # self.optimizer_SK = torch.optim.Adam(self.skeleton_net.alphas_m.parameters(), lr=self.skeleton_lr, betas=(opt.beta1, 0.999))
 
                 # need to check whether parameter contains abundant ones
                 self.optimizers.append(self.optimizer_SK)
@@ -79,11 +76,8 @@ class AugmentModel(BaseModel):
 
         BP2 = input['BP1'].cuda().float()
         # 14, no mid 
-        # aug_input = torch.cat([a1, a2], 1).cuda().float()  # (b, 14, 3)
-        aug_angles = self.skeleton_net(a1, a2)
-        # aug_angles = 0.2*a1+0.8*a2        
+        aug_angles = self.skeleton_net(a1, a2)       
         aug_pose = anglelimbtoxyz2(offset, aug_angles, limbs)
-        # aug_pose = anglelimbtoxyz2(offset, a1, limbs)
 
         for i in range(BP2.shape[0]):
             aug_pose[i] = check_visibility(aug_pose[i]) # 2d pose
@@ -145,7 +139,6 @@ class AugmentModel(BaseModel):
         return self.main_model.get_acc_error()
 
     def get_current_visuals(self):
-        # pdb.set_trace()
         height, width = self.main_model.input_P1.size(2), self.main_model.input_P1.size(3)
         aug_pose = util.draw_pose_from_map(self.input_BP_aug.data)[0]
         part_vis = self.main_model.get_current_visuals()['vis']
@@ -156,7 +149,6 @@ class AugmentModel(BaseModel):
         vis[:,width*6:width*7,:] = ((self.fake_aug + 1) / 2.0 * 255).astype(np.uint8)
 
         heatmap = self.main_model.heat6.data
-        # pdb.set_trace()
         vis[:,width*7:width*8,:] = util.draw_pose_from_map(heatmap, 0.1)[0]
         
         ret_visuals = OrderedDict([('vis', vis)])
@@ -165,13 +157,3 @@ class AugmentModel(BaseModel):
     def save(self, label):
         self.skeleton_net.save(label)
         self.main_model.save(label)
-
-
-# input22 = input2.view((input2.shape[0], 15, 2, -1))
-# # check if still need mapping
-# # post process
-
-# BP_aug_kpts = trans_motion_inv(normalize_motion_inv(input22, self.skeleton_net.mean_pose, 
-#     self.skeleton_net.std_pose), sx=center[:,0:1,0], sy=center[:,1:2,0]) / 2
-# # print(out.shape) # (b, 14, 2)
-        
